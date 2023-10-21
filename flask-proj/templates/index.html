@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcript Fetcher</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<h1>Welcome to MojoBob!</h1>
+
+<form action="/" method="post">
+    {%for i in range(0, size)%}
+        {% if i % 2 == 0 %}
+            <p>Human: {{ memory[i].content }}</p>
+        {% else %}
+            <p>MojoBob: {{ memory[i].content }}</p>
+        {%endif%}
+    {%endfor%}
+    <p>Enter query:</p><input name="inp" id="inp"></input>
+    <button type="submit">Submit</button>
+</form>
