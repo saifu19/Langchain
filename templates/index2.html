@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MojoBob Homepage</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-4">
+        <br>
+        <div class="d-flex justify-content-center">
+            <h1>Welcome to MojoBob!</h1>
+        </div>
+        <div class="d-flex justify-content-center">
+            <form action="/namespace-crud" method="get">
+                <button class="btn btn-primary" type="submit">Namespace CRUD</button>
+            </form>
+            <form action="/tool-crud" method="get">
+                <button class="btn btn-secondary" type="submit">Tool CRUD</button>
+            </form>
+        </div>
+        <br>
+        <div id="chatWindow">
+            <!-- This is where your chat will be displayed -->
+        </div>
+
+        <form id="chatForm"><!-- Change the action to `javascript:void(0)` or just remove it -->
+            <div class="row">
+                <div id="chatWindow"><!-- Add this div to display the chat history --></div>
+                {% for i in range(0, size) %}
+                    {% if i % 2 == 0 %}
+                        <p>Human: {{ memory[i].content }}</p>
+                    {% else %}
+                        <p>MojoBob: {{ memory[i].content }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="row">
+                <label for="inp">Enter query: </label>
+                <input type="text" class="form-control" name="inp" id="inp" autocomplete="off">
+            </div>
+            <div class="row">
+                <button class="btn btn-success" type="submit">Submit</button>
+            </div>
+        </form>
+        
+        <!-- Include JavaScript to handle AJAX form submission -->
+        <script>
+            document.getElementById('chatForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const inputVal = document.getElementById('inp').value;
+                
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ inp: inputVal })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response) {
+                        // Update chat window with new response
+                        const chatWindow = document.getElementById('chatWindow');
+                        chatWindow.innerHTML += `<p>Human: ${inputVal}</p>`;
+                        chatWindow.innerHTML += `<p>MojoBob: ${data.response}</p>`;
+                        
+                        // Reset the input field for the next message
+                        document.getElementById('inp').value = '';
+                    } else if (data.error) {
+                        console.error('Error from server:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
